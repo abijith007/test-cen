@@ -6,7 +6,7 @@ RUN npm install
 
 COPY . .
 
-RUN npm start
+RUN node index.js
 
 # Stage 2 - Deploy with NGNIX
 FROM nginx:1.16.0-alpine
