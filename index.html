@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js" integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ==" crossorigin="anonymous"></script>
+  <title>Document</title>
+</head>
+<body>
+  <h1>Header Data</h1>
+  <h2 id="id" style="border: 1px solid red; padding: 2rem; background-color: antiquewhite;">Hello</h2>
+  <script>
+
+    const headers = {
+        'Content-Type': 'text/plain'
+    };
+    
+     axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
+
+      axios.get("http://13.232.31.249:600",{headers}).then(res=>{
+      
+      document.getElementById("id").innerHTML = "cookie: "+ res.data.cookie_data +"<br><br><br>CSRF: "+res.data.csrf_token
+      console.log(res);
+            
+      var myHeaders = new Headers();
+      myHeaders.append("Cookie",res.data.cookie_data);
+
+      var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        redirect: 'follow'
+      };
+
+  
+      
+      fetch("https://rvcemeet1.cen.org.in/b/u/login?utf8=%E2%9C%93&authenticity_token="+res.data.csrf_token+"&session%5Bemail%5D=admin@example.com&session%5Bpassword%5D=bbbrvce&commit=Einloggen", requestOptions)
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => console.log('error', error));
+    })
+  </script>
+</body>
+</html>
