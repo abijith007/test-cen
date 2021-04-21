@@ -12,18 +12,24 @@
   <h2 id="id" style="border: 1px solid red; padding: 2rem; background-color: antiquewhite;">Hello</h2>
   <script>
 
+    success=false;
+
     const headers = {
         'Content-Type': 'text/plain'
     };
     
      axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
+     axios.defaults.headers.post['Access-Control-Allow-Credentials'] = 'true';
+     
 
-      axios.get("http://13.232.31.249:600",{headers}).then(res=>{
+
+      axios.get("http://localhost:600",{headers}).then(res=>{
       
-      document.getElementById("id").innerHTML = "cookie: "+ res.data.cookie_data +"<br><br><br>CSRF: "+res.data.csrf_token
+      document.getElementById("id").innerHTML = "cookie: "+ res.data.cookie_data +"<br><br><br>CSRF: "+res.data.csrf_token+"<br><br><br>Authenticity_Token: "+res.data.authenticity_token
       console.log(res);
             
       var myHeaders = new Headers();
+
       myHeaders.append("Cookie",res.data.cookie_data);
 
       var requestOptions = {
@@ -32,12 +38,37 @@
         redirect: 'follow'
       };
 
-  
-      
-      fetch("https://rvcemeet1.cen.org.in/b/u/login?utf8=%E2%9C%93&authenticity_token="+res.data.csrf_token+"&session%5Bemail%5D=admin@example.com&session%5Bpassword%5D=bbbrvce&commit=Einloggen", requestOptions)
+      let axiosConfig = {
+        headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            "Access-Control-Allow-Origin": "*",
+            'Cookie': "_greenlight-2_3_session=Dix3Jq%2FLGgCU8lPj%2BUYUB9TSU7r3Cjr368bq7EPslNeM9RmS3ZlEODxvIEhS3EZcn7sV0ZAJ29ns2WYNOm%2BEM4bhlWgC1JZL4umWwo03xKLrtDzcWputTycXHZifJyqEPNqxOgqxarSwgr8cY1KvtOz9iyUzkuo7hb0%3D--yOklqudY47LqFupB--B9kB4pJS%2FFTdX9ZTCQJ%2Few%3D%3D"
+        }
+      };
+
+      let body = {
+        "utf8":"✓",
+        "authenticity_token" : res.data.authenticity_token,
+        "session[email]" : "admin@example.com",
+        "session[password]": "bbbrvce",
+        "commit":"Sign+in"
+      }
+
+      console.log(requestOptions)
+      axios.defaults.withCredentials = true
+ 
+      axios.post("https://rvcemeet1.cen.org.in/b/u/login", body, axiosConfig ).then(res=>{
+        console.log(res);
+      }).catch(err=>{
+        console.log(err)
+      })
+
+      /*fetch("https://rvcemeet1.cen.org.in/b/u/login?utf8=%E2%9C%93&authenticity_token="+res.data.csrf_token+"&session%5Bemail%5D=admin@example.com&session%5Bpassword%5D=bbbrvce&commit=Sign+in", requestOptions)
+        fetch("https://rvcemeet1.cen.org.in/b/u/login?utf8=%E2%9C%93&authenticity_token=1krn5zrvSdJ7dGoG4j2qmeltA5J1u8c6TlM0zhrJTORFZvoFkDMoxdzOLam7gqNNc6ER6MxIyLhDyAZzaxMd6w==&session%5Bemail%5D=admin@example.com&session%5Bpassword%5D=bbbrvce&commit=Sign+in", requestOptions)
         .then(response => response.text())
         .then(result => console.log(result))
         .catch(error => console.log('error', error));
+      */
     })
   </script>
 </body>
